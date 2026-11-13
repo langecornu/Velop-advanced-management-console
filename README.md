@@ -172,6 +172,21 @@ Node may accept incoming connections: allow it.
 
 `.env` and `data/` are ignored by git. Keep them private.
 
+### Run it automatically (macOS)
+
+To keep the console running in the background, start it at login, and restart it if it crashes, install it as a
+launchd agent:
+
+```bash
+scripts/service.sh install     # builds the client if needed, then starts the service
+scripts/service.sh status      # running or not, and its process id
+scripts/service.sh logs        # follow ~/Library/Logs/velop-console.log
+scripts/service.sh restart     # after pulling changes or editing .env
+scripts/service.sh uninstall   # stop it and remove it from login
+```
+
+After pulling client changes, run `npm run build` and then `scripts/service.sh restart`.
+
 Development with live reload: run `npm run dev:server` and `npm run dev:client` in two terminals, then open
 `http://localhost:5173`. Checks: `npm test`, `npm run lint`, `npm run format`.
 
@@ -276,7 +291,9 @@ never call the router in a per-row loop, and every router write goes through `ch
 - **"ACCESS_PASSWORD is required" or "must be at least 8 characters" on start**: the tool listens on the network, so
   `.env` needs an `ACCESS_PASSWORD` of 8 or more characters. Or set `BIND_ADDRESS=127.0.0.1` to keep the tool on this
   computer only.
-- **`EADDRINUSE` on start**: another copy is already running. Stop it with `pkill -f "node server/index.js"`.
+- **`EADDRINUSE` on start**: another copy is already running, often the background service. Use
+  `scripts/service.sh restart`, or stop a manual copy with `pkill -f "node server/index.js"` (the service will start
+  a new one on its own; use `scripts/service.sh uninstall` to stop it for good).
 - **Logs tab is slow**: the router builds the support bundle on demand (about 35 seconds). It cannot return a single
   section, so the whole bundle is fetched once and cached for 2 minutes.
 - **A device shows Online though the router says offline** (or the reverse): the router's flag goes stale, which is
