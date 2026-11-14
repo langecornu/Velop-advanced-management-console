@@ -5,6 +5,7 @@ import AdminTab from './components/AdminTab.jsx';
 import DevicesTab from './components/DevicesTab.jsx';
 import DhcpTab from './components/DhcpTab.jsx';
 import DiagnosticsTab from './components/DiagnosticsTab.jsx';
+import ErrorBoundary from './components/ErrorBoundary.jsx';
 import ExplorerTab from './components/ExplorerTab.jsx';
 import Header from './components/Header.jsx';
 import LogsTab from './components/LogsTab.jsx';
@@ -27,7 +28,9 @@ export default function App() {
     <>
       <Header tabs={TABS} active={active} onSelect={setActive} />
       <main>
-        <Component />
+        <ErrorBoundary resetKey={active}>
+          <Component />
+        </ErrorBoundary>
       </main>
     </>
   );

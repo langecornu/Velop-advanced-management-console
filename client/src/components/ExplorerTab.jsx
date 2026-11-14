@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { api } from '../api.js';
 import { useAsync } from '../hooks/useAsync.js';
 import { useToast } from '../hooks/useToast.js';
+import { copyText } from '../lib/clipboard.js';
 import ActionHelp from './ActionHelp.jsx';
 import Icon from './Icon.jsx';
 import ResponseView from './ResponseView.jsx';
@@ -66,7 +67,7 @@ export default function ExplorerTab() {
 
   async function handleCopy() {
     try {
-      await navigator.clipboard.writeText(JSON.stringify(response, null, 2));
+      await copyText(JSON.stringify(response, null, 2));
       toast('ok', 'Response copied');
     } catch {
       toast('error', 'Could not copy to the clipboard');

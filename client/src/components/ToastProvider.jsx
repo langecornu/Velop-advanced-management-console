@@ -5,6 +5,9 @@ import { ToastContext } from '../hooks/useToast.js';
 import Icon from './Icon.jsx';
 
 const LIFETIME_MS = 5500;
+// A plain counter, not a random UUID: the browser's UUID helper only exists on https or localhost, and over plain
+// http from a phone it threw inside a render effect and blanked the whole page.
+let nextId = 0;
 
 export default function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
@@ -12,7 +15,8 @@ export default function ToastProvider({ children }) {
   const dismiss = useCallback((id) => setToasts((current) => current.filter((toast) => toast.id !== id)), []);
   const push = useCallback(
     (tone, text) => {
-      const id = crypto.randomUUID();
+      nextId += 1;
+      const id = nextId;
       setToasts((current) => [...current, { id, tone, text }]);
       setTimeout(() => dismiss(id), LIFETIME_MS);
     },

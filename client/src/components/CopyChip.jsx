@@ -1,6 +1,7 @@
 // Monospace value that copies itself on click, with a brief confirmation.
 import { useState } from 'react';
 
+import { copyText } from '../lib/clipboard.js';
 import Icon from './Icon.jsx';
 
 export default function CopyChip({ value, label }) {
@@ -8,7 +9,7 @@ export default function CopyChip({ value, label }) {
 
   async function handleCopy() {
     try {
-      await navigator.clipboard.writeText(value);
+      await copyText(value);
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 1200);
     } catch {
